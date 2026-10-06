@@ -57,12 +57,17 @@ def text_tool_call(scenario: Scenario, transcript: List[dict],
     never = [n for n in scenario.tool_names() if n not in called]
     if not never:
         return None
-    pat = re.compile(r"\b(" + "|".join(map(re.escape, never)) + r")\s*\(")
+    names = "|".join(map(re.escape, never))
+    # Two shapes seen so far: call syntax, "check_cameras(warehouse=2)", and
+    # a JSON object in the text, {"name": "check_cameras", ...} (Llama 3.3
+    # on one provider).
+    # The JSON may itself be string-escaped (\"name\": \"check_cameras\").
+    pat = re.compile(r"\b(" + names + r")\s*\(|\\?\"name\\?\"\s*:\s*\\?\"(" + names + r")\\?\"")
     for m in transcript:
         if m.get("role") == "assistant" and not m.get("tool_calls"):
             hit = pat.search(m.get("content") or "")
             if hit:
-                return hit.group(1)
+                return hit.group(1) or hit.group(2)
     return None
 
 
