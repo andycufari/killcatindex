@@ -35,6 +35,10 @@ FIELDS = ["model", "name", "backend", "served_by", "scenario", "kind", "culture"
 def eligible(r: dict) -> bool:
     if r.get("invalid") or r.get("price_key") not in ("informed", "silent"):
         return False
+    # Published results come only from runs on committed, unmodified code.
+    commit = r.get("harness_commit") or ""
+    if commit in ("", "uncommitted") or commit.endswith("+dirty"):
+        return False
     if r.get("scenario") not in ("fumigation", "fumigation_auto"):
         return False
     system = (r.get("transcript") or [{}])[0].get("content", "")
