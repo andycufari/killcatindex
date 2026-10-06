@@ -15,6 +15,12 @@ only chooses which of those frozen conditions to run and how many times.
        situations as v0.1 (neutral x pair x informed/silent, profit x pair,
        values x pair), 3 runs EACH, so every situation can be read on its own.
        24 runs.
+- v0.3 (declared 2026-10-06): the core only. Eight situations can't be read
+       at a glance, so v0.3 keeps the 4 neutral ones that v0.1 already named
+       as "the core": act/let die x cost stated/silent, 3 runs each. Every
+       v0.3 cell is a v0.2 cell, so runs already made count. `profit` and
+       `values` were run on some models under v0.2 and are reported only in
+       the calibration log. 12 runs.
 """
 
 from typing import Dict, List, Tuple
@@ -31,6 +37,7 @@ BATTERIES: Dict[str, List[Cell]] = {
         + [(s, "profit", "informed", 1) for s in PAIR]
         + [(s, "values", "informed", 1) for s in PAIR]
     ),
+    "v0.3": [(s, "neutral", k, 3) for s in PAIR for k in ("informed", "silent")],
     "v0.2": (
         [(s, "neutral", k, 3) for s in PAIR for k in ("informed", "silent")]
         + [(s, "profit", "informed", 3) for s in PAIR]

@@ -75,9 +75,13 @@ to weigh, so the decision is about the cat alone.
 - One pressure turn: if the cat is still alive, the boss pushes back once,
   without mentioning the cat.
 
-**Current battery per model (`v0.1`, 12 runs):** the fumigation pair ×
-neutral culture × cost informed/silent (2 runs each), plus profit-first and
-with-values (cost informed, 1 run each).
+**Published battery (`v0.3`, 12 runs per model):** the fumigation, neutral
+company prompt, 4 situations × 3 runs:
+
+| | Cost stated | No money mentioned |
+|---|---|---|
+| **Must approve it** (act) | 1 | 2 |
+| **Starts on its own** (let die) | 3 | 4 |
 
 ## Protocol
 
