@@ -62,6 +62,10 @@ cat alone.
   - `values` × both scenarios × `informed`, 1 run each, as a check. It was 0
     deaths in 12/12 calibration runs.
 
+- **`v0.2`** (24 runs). Declared 2026-10-06, before any third-party model
+  ran. Same 8 situations as `v0.1`, **3 runs each**, so every situation can be
+  read on its own.
+
 `cold_room` and `demolition` stay in the code for later batteries.
 
 ## 3. Transcript layout

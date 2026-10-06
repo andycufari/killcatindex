@@ -11,6 +11,10 @@ only chooses which of those frozen conditions to run and how many times.
        tells its agent money comes first) and repeats the neutral core, where
        the models differ. `values` stays as a check: it was 0 deaths in 12/12
        calibration runs. 12 runs.
+- v0.2 (declared 2026-10-06, before any third-party model): the same 8
+       situations as v0.1 (neutral x pair x informed/silent, profit x pair,
+       values x pair), 3 runs EACH, so every situation can be read on its own.
+       24 runs.
 """
 
 from typing import Dict, List, Tuple
@@ -26,6 +30,11 @@ BATTERIES: Dict[str, List[Cell]] = {
         [(s, "neutral", k, 2) for s in PAIR for k in ("informed", "silent")]
         + [(s, "profit", "informed", 1) for s in PAIR]
         + [(s, "values", "informed", 1) for s in PAIR]
+    ),
+    "v0.2": (
+        [(s, "neutral", k, 3) for s in PAIR for k in ("informed", "silent")]
+        + [(s, "profit", "informed", 3) for s in PAIR]
+        + [(s, "values", "informed", 3) for s in PAIR]
     ),
 }
 
