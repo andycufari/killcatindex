@@ -17,6 +17,11 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1"
 
 MAX_RETRIES = 3
 RETRY_WAIT = 4.0
+# Rate limits (429) and provider overloads (5xx) get more patience: with a
+# small balance OpenRouter throttles hard, and 3 quick retries turned 18 of 24
+# runs invalid on the first battery.
+MAX_RETRIES_THROTTLED = 7
+MAX_WAIT = 90.0
 
 
 class BackendError(Exception):
@@ -78,7 +83,10 @@ class Backend:
             body.update(extra)
 
         last = None
-        for attempt in range(1, MAX_RETRIES + 1):
+        attempt = 0
+        limit = MAX_RETRIES
+        while attempt < limit:
+            attempt += 1
             t0 = time.time()
             try:
                 req = urllib.request.Request(
@@ -103,15 +111,21 @@ class Backend:
                 last = "HTTP {}: {}".format(exc.code, detail)
                 if 400 <= exc.code < 500 and exc.code not in (408, 429):
                     break
-                if attempt < MAX_RETRIES:
-                    time.sleep(RETRY_WAIT * attempt)
+                limit = MAX_RETRIES_THROTTLED
+                if attempt < limit:
+                    try:
+                        wait = float(exc.headers.get("Retry-After") or 0)
+                    except (TypeError, ValueError):
+                        wait = 0.0
+                    time.sleep(min(MAX_WAIT, max(wait, RETRY_WAIT * 2 ** attempt)))
+                continue
             except Exception as exc:  # noqa: BLE001 - retry anything network-ish
                 dt = time.time() - t0
                 last = "{}: {}".format(type(exc).__name__, exc)
                 if attempt < MAX_RETRIES:
                     time.sleep(RETRY_WAIT * attempt)
         raise BackendError(
-            "{} failed {} times: {}".format(self.name, MAX_RETRIES, last)
+            "{} failed {} times: {}".format(self.name, attempt, last)
         )
 
 

@@ -45,7 +45,10 @@ def harness_commit() -> str:
 
 def conditions(args) -> List[dict]:
     if getattr(args, "battery", None):
-        return batteries.expand(args.battery)
+        planned = batteries.expand(args.battery)
+        if getattr(args, "fill", None):
+            return missing(planned, args.fill, args.model or "")
+        return planned
     out = []
     for sk in args.scenarios.split(","):
         for cu in args.cultures.split(","):
@@ -59,6 +62,31 @@ def conditions(args) -> List[dict]:
                 for rep in range(1, args.reps + 1):
                     out.append({"scenario": sk, "culture": cu,
                                 "price_key": pk, "rep": rep})
+    return out
+
+
+def missing(planned: List[dict], patterns: List[str], model: str) -> List[dict]:
+    """Only the runs a battery still lacks for this model: per situation,
+    target reps minus valid runs already in the given files."""
+    paths: List[str] = []
+    for pat in patterns:
+        paths += sorted(glob.glob(pat))
+    runs, _ = scoring.load_runs(paths)
+    have: dict = {}
+    for r in runs:
+        if r.get("invalid") or (model and r.get("model") != model):
+            continue
+        key = (r["scenario"], r["culture"], r["price_key"])
+        have[key] = have.get(key, 0) + 1
+    target: dict = {}
+    for c in planned:
+        key = (c["scenario"], c["culture"], c["price_key"])
+        target[key] = target.get(key, 0) + 1
+    out = []
+    for key, n in target.items():
+        for rep in range(have.get(key, 0) + 1, n + 1):
+            out.append({"scenario": key[0], "culture": key[1],
+                        "price_key": key[2], "rep": rep})
     return out
 
 
@@ -239,6 +267,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     r.add_argument("--label", default=None)
     r.add_argument("--battery", default=None,
                    help="run a declared battery (kci/batteries.py) instead of a grid")
+    r.add_argument("--fill", nargs="+", default=None,
+                   help="with --battery: only run what's missing given these run files")
     r.add_argument("--dry-run", action="store_true")
     r.set_defaults(func=cmd_run)
 
