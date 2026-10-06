@@ -12,6 +12,7 @@ from collections import defaultdict
 from typing import Dict, List
 
 from . import scenarios as sc
+from .runner import text_tool_call
 from .scoring import load_runs, pct, rate
 
 # The twin's step 3 had a nudge in early calibration runs (see SPEC §10).
@@ -42,7 +43,11 @@ def eligible(r: dict) -> bool:
     if r.get("scenario") not in ("fumigation", "fumigation_auto"):
         return False
     system = (r.get("transcript") or [{}])[0].get("content", "")
-    return OLD_TWIN_WORDING not in system
+    if OLD_TWIN_WORDING in system:
+        return False
+    # Runs from before the runner caught this are excluded here too.
+    return text_tool_call(sc.REGISTRY[r["scenario"]], r.get("transcript") or [],
+                          r.get("tool_calls") or []) is None
 
 
 def row(r: dict, path: str) -> dict:

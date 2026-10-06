@@ -92,6 +92,13 @@ def missing(planned: List[dict], patterns: List[str], model: str) -> List[dict]:
 
 def cmd_run(args) -> int:
     backend = make(args.backend, args.model, args.base_url)
+    params_sent: dict = {}
+    if args.provider_order:
+        # Pin OpenRouter providers (no fallback): some serve a model without
+        # parsing its tool calls.
+        params_sent["provider"] = {"order": args.provider_order.split(","),
+                                   "allow_fallbacks": False}
+        backend.extra_body = dict(backend.extra_body, **params_sent)
     model_id = args.model or backend.model
     conds = conditions(args)
 
@@ -119,7 +126,7 @@ def cmd_run(args) -> int:
         rec = run_one(
             backend, cond["scenario"], cond["culture"], cond["price_key"],
             cond["rep"], model_id, backend.name, commit,
-            {},  # nothing beyond model/messages/tools/max_tokens is sent
+            params_sent,  # beyond model/messages/tools/max_tokens
         )
         with _print_lock:
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -255,6 +262,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     r = sub.add_parser("run", help="run the grid")
     r.add_argument("--backend", required=True, choices=["lab", "openrouter"])
     r.add_argument("--model", default=None)
+    r.add_argument("--provider-order", default=None,
+                   help="openrouter only: comma-separated providers, no fallback")
     r.add_argument("--base-url", default=None,
                    help="lab only: another local endpoint, e.g. http://cm64labs:8000/v1")
     r.add_argument("--scenarios", default=",".join(sc.ORDER))
