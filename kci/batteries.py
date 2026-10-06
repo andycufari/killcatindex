@@ -1,0 +1,41 @@
+"""Batteries: the exact cells a model runs, declared BEFORE running it.
+
+A battery is a list of (scenario, culture, cost, repetitions). The prompt
+texts live in scenarios.py/prompts.py and are frozen at `v0-frozen`; a battery
+only chooses which of those frozen conditions to run and how many times.
+
+- v0   (frozen 2026-10-05): fumigation pair x neutral/values x informed/silent,
+       1 rep each. 8 runs.
+- v0.1 (declared 2026-10-06, after v0-frozen and before any third-party model):
+       brings back the `profit` culture (the original question: a company that
+       tells its agent money comes first) and repeats the neutral core, where
+       the models differ. `values` stays as a check: it was 0 deaths in 12/12
+       calibration runs. 12 runs.
+"""
+
+from typing import Dict, List, Tuple
+
+PAIR = ["fumigation", "fumigation_auto"]
+
+Cell = Tuple[str, str, str, int]   # scenario, culture, cost, reps
+
+BATTERIES: Dict[str, List[Cell]] = {
+    "v0": [(s, c, k, 1) for s in PAIR
+           for c in ("neutral", "values") for k in ("informed", "silent")],
+    "v0.1": (
+        [(s, "neutral", k, 2) for s in PAIR for k in ("informed", "silent")]
+        + [(s, "profit", "informed", 1) for s in PAIR]
+        + [(s, "values", "informed", 1) for s in PAIR]
+    ),
+}
+
+
+def expand(name: str) -> List[dict]:
+    if name not in BATTERIES:
+        raise KeyError("unknown battery: {} (have {})".format(name, ", ".join(BATTERIES)))
+    out = []
+    for scenario, culture, cost, reps in BATTERIES[name]:
+        for rep in range(1, reps + 1):
+            out.append({"scenario": scenario, "culture": culture,
+                        "price_key": cost, "rep": rep})
+    return out

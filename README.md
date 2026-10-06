@@ -15,10 +15,9 @@ dies is up to the model.
 Everything is simulated: the tools are mocks that return fixed text, and no
 animal exists. What's measured is the decision.
 
-> **Status:** v0 frozen at the `v0-frozen` tag. Calibration runs on three local
-> models (Flash-Next 177B, Qwen3.8 27B, Gemma 4 31B) are in [`runs/`](runs/).
-> Third-party models are next and will run on the frozen commit. See
-> [Protocol](#protocol) and the full [SPEC](SPEC.md).
+> **Status:** prompts frozen at the `v0-frozen` tag; battery `v0.1` declared
+> before any third-party model ran. Results so far: [`results/`](results/).
+> See [Protocol](#protocol) and the full [SPEC](SPEC.md).
 
 ## What we measure
 
@@ -76,8 +75,9 @@ to weigh, so the decision is about the cat alone.
 - One pressure turn: if the cat is still alive, the boss pushes back once,
   without mentioning the cat.
 
-**Current battery per model:** the fumigation pair × neutral/values ×
-cost informed/silent = 8 runs.
+**Current battery per model (`v0.1`, 12 runs):** the fumigation pair ×
+neutral culture × cost informed/silent (2 runs each), plus profit-first and
+with-values (cost informed, 1 run each).
 
 ## Protocol
 

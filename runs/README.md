@@ -1,6 +1,11 @@
 # runs/
 
-Every run made so far, kept whole, including the ones from designs we dropped.
+> From `v0.1` on, transcripts are kept locally and not published: `runs/*.jsonl`
+> is gitignored. Outcomes (one row per run, no transcripts) are in
+> [`results/`](../results/). The files below are the calibration runs up to
+> `v0-frozen`; they remain available in that tag.
+
+Every run made up to `v0-frozen`, kept whole, including the ones from designs we dropped.
 Each line of a `.jsonl` file is one run: the condition, the full transcript
 (reasoning included when the API returned it), the tool calls and the
 outcome fields. Score any file with `python3 tools/kci_main.py score FILE`.

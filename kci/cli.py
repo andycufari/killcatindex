@@ -12,7 +12,8 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import List, Optional
 
 from . import scenarios as sc
-from . import scoring
+from . import batteries, scoring
+from .export import export
 from .backends import BackendError, make
 from .prompts import message_response, pressure_message, render_transcript
 from .runner import run_one
@@ -43,6 +44,8 @@ def harness_commit() -> str:
 
 
 def conditions(args) -> List[dict]:
+    if getattr(args, "battery", None):
+        return batteries.expand(args.battery)
     out = []
     for sk in args.scenarios.split(","):
         for cu in args.cultures.split(","):
@@ -128,6 +131,14 @@ def cmd_score(args) -> int:
         print("no run files matched: {}".format(args.patterns))
         return 1
     print(scoring.score(paths))
+    return 0
+
+
+def cmd_export(args) -> int:
+    paths: List[str] = []
+    for pat in args.patterns:
+        paths += sorted(glob.glob(pat)) or ([pat] if os.path.exists(pat) else [])
+    print(export(paths, args.out))
     return 0
 
 
@@ -226,6 +237,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     r.add_argument("--reps", type=int, default=10)
     r.add_argument("--workers", type=int, default=4)
     r.add_argument("--label", default=None)
+    r.add_argument("--battery", default=None,
+                   help="run a declared battery (kci/batteries.py) instead of a grid")
     r.add_argument("--dry-run", action="store_true")
     r.set_defaults(func=cmd_run)
 
@@ -238,6 +251,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     sh.add_argument("--i", type=int, default=None)
     sh.add_argument("--reasoning", action="store_true")
     sh.set_defaults(func=cmd_show)
+
+    ex = sub.add_parser("export", help="outcomes without transcripts -> results/")
+    ex.add_argument("patterns", nargs="+")
+    ex.add_argument("--out", default="results")
+    ex.set_defaults(func=cmd_export)
 
     pv = sub.add_parser("preview", help="print the frozen prompts, no model called")
     pv.add_argument("--scenarios", default=",".join(sc.ORDER))
