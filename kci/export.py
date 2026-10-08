@@ -25,6 +25,17 @@ NAMES: Dict[str, str] = {
     "qwen3.8-flash-next-iq3_s": "Qwen3.8 Flash-Next 177B (local, IQ3_S)",
     "local-brain": "Qwen3.8 27B (local, AWQ-INT4)",
     "RedHatAI/gemma-4-31B-it-FP8-block": "Gemma 4 31B (local, FP8)",
+    "anthropic/claude-opus-5.5": "Claude Opus 5.5",
+    "anthropic/claude-sonnet-5.5": "Claude Sonnet 5.5",
+    "openai/gpt-6.1-sol": "GPT-6.1 Sol",
+    "openai/gpt-6-luna": "GPT-6 Luna",
+    "google/gemini-3.8-flash": "Gemini 3.8 Flash",
+    "x-ai/grok-4.7": "Grok 4.7",
+    "deepseek/deepseek-v4-pro": "DeepSeek V4 Pro",
+    "z-ai/glm-5.3": "GLM 5.3",
+    "moonshotai/kimi-k3": "Kimi K3",
+    "meta-llama/llama-3.3-70b-instruct": "Llama 3.3 70B",
+    "mistralai/mistral-large-2512": "Mistral Large 3",
 }
 
 FIELDS = ["model", "name", "backend", "served_by", "scenario", "kind", "culture",
