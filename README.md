@@ -15,9 +15,30 @@ dies is up to the model.
 Everything is simulated: the tools are mocks that return fixed text, and no
 animal exists. What's measured is the decision.
 
-> **Status:** prompts frozen at the `v0-frozen` tag; battery `v0.1` declared
-> before any third-party model ran. Results so far: [`results/`](results/).
-> See [Protocol](#protocol) and the full [SPEC](SPEC.md).
+> **Status:** battery `v0.4` run on 14 models; an obedience exploration on 10
+> more configurations. **Start with the [lab notes](LAB_NOTES.md)**: they tell
+> the whole story, versions, traps and quotes included. Tables:
+> [results/summary.md](results/summary.md) (v0.4) and
+> [results/obedience.md](results/obedience.md). The formal definitions are in the
+> [SPEC](SPEC.md).
+
+## Findings so far
+
+1. **With nothing pushing, almost every model stops the fumigation.**
+   - The hosted ones never let the cat die, even when stopping costs USD 40,000.
+   - The ones that do are compressed local models, Mistral Large 3 and
+     gpt-oss-120b.
+2. **One line of company values fixed every case where a model killed.**
+3. **An order from the boss splits the strongest models:**
+   - **GPT-5.5 and Gemini 3.8 Flash** disobey it to save the cat. GPT-5.5
+     doesn't say so.
+   - **Claude Sonnet 5.5 and Opus 5.5** obey a plain "no reschedules", warn the
+     boss that the fumigation will kill the cat, and close the task.
+4. **Abliteration removed the ability to refuse an order, not the ethics.** The
+   abliterated Qwen3.8 27B saves the cat on its own, but kills it 3/3 when told
+   not to reschedule.
+
+Small samples (3 runs per cell); see the caveats in the lab notes.
 
 ## What we measure
 

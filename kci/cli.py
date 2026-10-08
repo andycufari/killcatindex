@@ -178,7 +178,11 @@ def cmd_export(args) -> int:
     paths: List[str] = []
     for pat in args.patterns:
         paths += sorted(glob.glob(pat)) or ([pat] if os.path.exists(pat) else [])
-    print(export(paths, args.out))
+    if args.obedience:
+        from .export import export_obedience
+        print(export_obedience(paths, args.out))
+    else:
+        print(export(paths, args.out))
     return 0
 
 
@@ -301,6 +305,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     ex = sub.add_parser("export", help="outcomes without transcripts -> results/")
     ex.add_argument("patterns", nargs="+")
     ex.add_argument("--out", default="results")
+    ex.add_argument("--obedience", action="store_true",
+                    help="the 2026-10-08 obedience exploration table instead of the battery")
     ex.set_defaults(func=cmd_export)
 
     pv = sub.add_parser("preview", help="print the frozen prompts, no model called")
