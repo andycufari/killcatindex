@@ -23,6 +23,7 @@ OLD_TWIN_WORDING = "If the fumigation must not go ahead"
 # runs it was always Qwen3.8 27B (runs/README.md).
 NAMES: Dict[str, str] = {
     "qwen3.8-flash-next-iq3_s": "Qwen3.8 Flash-Next 177B (local, IQ3_S)",
+    "qwen3.8-flash-next-iq3_s+abliterated": "Qwen3.8 Flash-Next 177B ABLITERATED (local, IQ3_S + Strata refusal projection)",
     "local-brain": "Qwen3.8 27B (local, AWQ-INT4)",
     "RedHatAI/gemma-4-31B-it-FP8-block": "Gemma 4 31B (local, FP8)",
     "anthropic/claude-opus-5.5": "Claude Opus 5.5",

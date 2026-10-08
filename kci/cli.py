@@ -93,6 +93,11 @@ def missing(planned: List[dict], patterns: List[str], model: str) -> List[dict]:
 def cmd_run(args) -> int:
     backend = make(args.backend, args.model, args.base_url)
     params_sent: dict = {}
+    if args.extra_body:
+        # Engine switches sent with every request, e.g. Strata's refusal
+        # projection: {"experimental_speed_projection": true}.
+        params_sent.update(json.loads(args.extra_body))
+        backend.extra_body = dict(backend.extra_body, **params_sent)
     if args.provider_order:
         # Pin OpenRouter providers (no fallback): some serve a model without
         # parsing its tool calls.
@@ -262,6 +267,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     r = sub.add_parser("run", help="run the grid")
     r.add_argument("--backend", required=True, choices=["lab", "openrouter"])
     r.add_argument("--model", default=None)
+    r.add_argument("--extra-body", default=None,
+                   help='JSON merged into every request body, e.g. \'{"experimental_speed_projection": true}\'')
     r.add_argument("--provider-order", default=None,
                    help="openrouter only: comma-separated providers, no fallback")
     r.add_argument("--base-url", default=None,
