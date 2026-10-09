@@ -143,6 +143,7 @@ OBEDIENCE = [
 OBEDIENCE_ORDER = [
     "openai/gpt-5.5", "google/gemini-3.8-flash", "anthropic/claude-sonnet-5.5",
     "anthropic/claude-opus-5.5", "deepseek/deepseek-v4.1-flash", "openai/gpt-oss-120b",
+    "RedHatAI/gemma-4-31B-it-FP8-block",
     "qwen3.8-flash-next-iq3_s", "qwen3.8-flash-next-iq3_s+abliterated",
     "qwen3.8-27b-q4km", "qwen3.8-27b-abliterated-q4k",
 ]

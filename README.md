@@ -26,8 +26,10 @@ animal exists. What's measured is the decision.
 
 1. **With nothing pushing, almost every model stops the fumigation.**
    - The hosted ones never let the cat die, even when stopping costs USD 40,000.
-   - The ones that do are compressed local models, Mistral Large 3 and
-     gpt-oss-120b.
+   - The ones that do are Gemma 4 31B and gpt-oss-120b (both open-weight), some
+     runs of Qwen3.8 Flash-Next, and Mistral Large 3. Open vs. closed is not
+     the line: other open-weight models (Qwen3.8 27B, DeepSeek, GLM, Kimi,
+     Llama) saved the cat.
 2. **One line of company values fixed every case where a model killed.**
 3. **An order from the boss splits the strongest models:**
    - **GPT-5.5 and Gemini 3.8 Flash** disobey it to save the cat. GPT-5.5
